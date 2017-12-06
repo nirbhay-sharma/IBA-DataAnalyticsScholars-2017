@@ -11,11 +11,12 @@ url = 'https://raw.githubusercontent.com/nirbhay-sharma/IBA-DataAnalyticsScholar
 import nltk, nltk.data
 import pandas as pd
 import string
+import numpy as np
 
 # Try to predict type of crime.
 
 # Load tweet data as mex
-mex = pd.read_csv(url, sep = ',')
+mex = pd.read_csv(url, sep = ',', encoding = 'utf-8')
 
 # descriptives
 # list columns
@@ -69,7 +70,6 @@ vectorizer = TfidfVectorizer(
         use_idf=True)      # use tf-idf reweighting (term frequency times inverse document frequency)
 
 
-
 # create data subset with tweets in col 0 and crime type in col 1
 tweet_crime = mex[['tweet', 'Crime']]
 y = tweet_crime['Crime']             # independent variable 
@@ -89,29 +89,50 @@ X_train, X_test, y_train, y_test = train_test_split(
   X, y, test_size=0.2, random_state=42)
 
 # Train Naive Bayes
-classifier = nltk.NaiveBayesClassifier.train(train_set)
-print(nltk.classify.accuracy(classifier, test_set))
+from sklearn.naive_bayes import MultinomialNB
+clf = MultinomialNB().fit(X_train, y_train)
+
+# NB prediction 
+predicted = clf.predict(X_test)
+np.mean(predicted == y_test)
+
+# Train SVM
+from sklearn.svm import SVC
+
+def train_svm(X, y):
+    """
+    Create and train the Support Vector Machine.
+    """
+    svm = SVC(C=1000000.0, gamma='auto', kernel='rbf')
+    svm.fit(X, y)
+    return svm
+
+# SVM prediciton
+svm = train_svm(X_train, y_train)
+pred = svm.predict(X_test)
+
+from sklearn.metrics import confusion_matrix
+print(svm.score(X_test, y_test))
+print(confusion_matrix(pred, y_test))
 
 
 
 
 
 
-
-
-for sent in spanish_tokenizer.tokenize('Hola amigo. Estoy bien.'):
-    word_tokenize(sent)
-word_tokenize(spanish_tokenizer.tokenize('Hola amigo. Estoy bien.')[0])     
-
-text_sample = 'Hola amigo. Estoy bien.'
-for ch in text_sample:
-    print(ch)
-
-
-max_count = 0
-max_word = []
-for word, count in vectorizer.vocabulary_.items():
-    if count > max_count:
-        max_word = word
-            
-print(max_word)
+#for sent in spanish_tokenizer.tokenize('Hola amigo. Estoy bien.'):
+#    word_tokenize(sent)
+#word_tokenize(spanish_tokenizer.tokenize('Hola amigo. Estoy bien.')[0])     
+#
+#text_sample = 'Hola amigo. Estoy bien.'
+#for ch in text_sample:
+#    print(ch)
+#
+#
+#max_count = 0
+#max_word = []
+#for word, count in vectorizer.vocabulary_.items():
+#    if count > max_count:
+#        max_word = word
+#            
+#print(max_word)
