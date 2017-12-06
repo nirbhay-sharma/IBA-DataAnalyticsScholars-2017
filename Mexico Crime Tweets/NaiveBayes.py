@@ -6,7 +6,7 @@ Created on Tue Dec  5 17:17:48 2017
 @author: otto
 """
 # set working directory
-cd /Users/otto/Documents/ImperialDocuments/DLA_Piper/Julio/NLP/Mexico_Tweets/
+url = 'https://raw.githubusercontent.com/nirbhay-sharma/IBA-DataAnalyticsScholars-2017/master/Mexico%20Crime%20Tweets/tweets_cdmx.csv'
 
 import nltk, nltk.data
 import pandas as pd
@@ -15,7 +15,7 @@ import string
 # Try to predict type of crime.
 
 # Load tweet data as mex
-mex = pd.read_csv('tweets_cdmx.csv', sep = ',')
+mex = pd.read_csv(url, sep = ',')
 
 # descriptives
 # list columns
