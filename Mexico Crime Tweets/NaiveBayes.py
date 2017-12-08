@@ -31,6 +31,10 @@ from nltk.stem import SnowballStemmer
 snowball_stemmer = SnowballStemmer("spanish")
 stemmer = snowball_stemmer
 
+# stopwords - spanish 
+from nltk.corpus import stopwords
+stop = set(stopwords.words('spanish'))
+
 def stem_tokens(tokens, stemmer):
     stemmed = []
     for token in tokens:
@@ -52,12 +56,18 @@ def tokenize(text):
                 tokens.append(word)
     stems = stem_tokens(tokens, stemmer)  # now stem tokens (words)
     return stems
-  
+ 
+def tokenize_2(text):
+    tokens = [] # words
+    sent_tokens = spanish_tokenizer.tokenize(text) # spanish sentences
+    for sent in sent_tokens:
+        for word in word_tokenize(sent):
+            # remove punctuation from tokesns (note this is after tokenization)
+            if word not in string.punctuation and word not in stop:
+                tokens.append(word)
+    stems = stem_tokens(tokens, stemmer)  # now stem tokens (words)
+    return stems
     
-# stopwords - spanish 
-from nltk.corpus import stopwords
-stop = set(stopwords.words('spanish'))
-
 # build feature data set. 
 from sklearn.feature_extraction.text import TfidfVectorizer
 vectorizer = TfidfVectorizer(
